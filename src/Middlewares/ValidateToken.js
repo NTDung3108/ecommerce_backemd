@@ -1,22 +1,29 @@
 const jwt = require('jsonwebtoken');
+const { uid } = require('rand-token');
 
 
 
-const validateToken = ( req, res, next ) => {
+const validateToken = async ( req, res, next ) => {
 
     let token = req.header('xx-token');
 
     if( !token ){
         return res.status(401).json({
             resp: false,
-            msj : "There is not Token in the request"
+            msj : "There is not Token in the request",
+            userid: uid,
+            token: 'Invalid Token'
         });
     }
+
+    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
     try {
 
         // -----------------------------------Add key Jwt TOKEN
-        const { uid } = jwt.verify( token, 'mysecretkey' );
+        const { uid } = await jwt.verify( token, accessTokenSecret, {
+			ignoreExpiration: true,
+		} );       
 
         req.uid = uid;
 
@@ -26,7 +33,7 @@ const validateToken = ( req, res, next ) => {
         return res.status(401).json({
             resp: false,
             msj : 'Invalid Token',
-            users: {},
+            userid: uid,
             token: 'Invalid Token'
         });
     }

@@ -94,10 +94,7 @@ const ListSubCategoriesAll = async ( req, res = response ) => {
 
 const ListDiscaountBannerHome =  async ( req, res = response ) => {
     
-    const d = new Date().getTime()/1000;
-    console.log(Math.round(d));
-
-    const discounts = await pool.query('SELECT*FROM discount WHERE endTime >= ? AND startTime <= ?', [Math.round(d), Math.round(d)]);
+    const discounts = await pool.query('SELECT*FROM discount ORDER BY endTime DESC LIMIT 3');
 
     if( discounts.length > 0 ){
 
@@ -135,11 +132,32 @@ const ListSubcategoriesHome =  async ( req, res = response ) => {
     }
 }
 
+const getAllSubCategories = async ( req, res = response ) => {
+
+    const subCategory = await pool.query('SELECT*FROM subcategory');
+
+    if( subCategory.length > 0){
+
+        return res.json({
+            resp: true,
+            msj: 'List All Category',
+            subcategories: subCategory
+        });
+    }else{
+
+        return res.json({
+            resp: false,
+            msj: 'Without list categories'
+        });
+    }
+}
+
 module.exports = {
     ListProductsHome,
     ListCategoriesAll,
     ListCategoriesHome,
     ListSubCategoriesAll,
     ListDiscaountBannerHome,
-    ListSubcategoriesHome
+    ListSubcategoriesHome,
+    getAllSubCategories
 }
