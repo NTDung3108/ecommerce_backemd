@@ -1,18 +1,20 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { createUser } = require('../Controller/Register');
-const { LoginUser, RenewToken, RefreshToken} = require('../Controller/LoginController');
+const { createUser, createStaff} = require('../Controller/Register');
+const { LoginUser, RenewToken, RefreshToken, LoginStaff} = require('../Controller/LoginController');
 const { ValidatedAuth} = require('../Middlewares/ValidateAuth');
 const { validateToken } = require('../Middlewares/ValidateToken');
 const { changePhotoProfile, userPersonalRegister, getPersonalInformation, 
     updateFirstName, updateLastName, updatePhone, updateAddress, checkPhone, forgotPassword} = require('../Controller/UserController');
-const { uploadsProfile } = require('../Helpers/Multer');
+const { uploadsProfile, uploadManyFiles, uploadsBrands} = require('../Helpers/Multer');
 const { ListProductsHome, ListCategoriesAll, ListCategoriesHome, ListSubCategoriesAll,
      ListDiscaountBannerHome, ListSubcategoriesHome, getAllSubCategories} = require('../Controller/HomeController');
 const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurchasedProduct, 
     getProductsForCategories, getBrandList, getAllProducts, checkQuantityProduct, getDetailOders,
     updateOrderStatus} = require('../Controller/ProductsController');
-
+const { addNewProduct, deleteProduct, getProductById} = require('../Controller/ProductsControllerStaff');
+const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
+const { getAllOrders } = require('../Controller/OrdersControllerStaff');
 
 const router = Router();
 
@@ -77,5 +79,34 @@ router.get('/api/get-all-product', getAllProducts);
 router.put('/api/update-quantity-product', validateToken, checkQuantityProduct);
 router.get('/api/get-detail-by-id/:orderId', validateToken, getDetailOders);
 router.put('/api/update-order-status', validateToken, updateOrderStatus);
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+//Staff api//
+
+//api auth staff
+
+router.post( '/api/register-staff', [
+    check('phone', 'PhoneNumber is required').isMobilePhone(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('idUser', 'idUser is required').not().isEmpty(),
+    ValidatedAuth
+], createStaff);
+
+router.post('/api/login-staff',[
+    check('phone', 'PhoneNumber is required').isMobilePhone(),
+    check('password', 'Password is required').not().isEmpty(),
+    ValidatedAuth
+], LoginStaff );
+
+router.post('/api/staff/add-new-product', uploadManyFiles.array('multi-files',5), addNewProduct);
+router.delete('/api/staff/delete-product/:idProduct', deleteProduct);
+router.get('/api/staff/get-product-by-id/:id',getProductById)
+
+router.post('/api/staff/add-new-brands', uploadsBrands.single('brands'), addNewBrands);
+router.get('/api/staff/get-all-brands', getAllBrands);
+router.delete('/api/staff/delete-brands', deleteBrands);
+
+router.get('/api/staff/get-all-orders', getAllOrders);
 
 module.exports = router;

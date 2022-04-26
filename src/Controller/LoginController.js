@@ -87,6 +87,87 @@ const LoginUser = async ( req, res = response ) => {
     }
 }
 
+const LoginStaff = async ( req, res = response ) => {
+
+    const {phone, password} = req.body;
+
+    const rows = await pool.query(`CALL SP_VALIDATE_LOGIN(?);`,[ phone ]);
+
+    if( rows[0].length > 0){
+
+        const users = rows[0][0];
+        console.log(users);
+
+        let validatedPassword = await bcrypt.compareSync(password, users.passwordd);
+
+        if( validatedPassword && users.group_id != 3 && users.isVerify == 1){
+
+            console.log(users.persona_id);
+
+            let accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
+
+	        let accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+
+            const dataForAccessToken = {
+                uid: users.persona_id,
+            };
+
+            let token = await generarJsonWebToken(dataForAccessToken, accessTokenSecret, accessTokenLife);
+
+            if(!token){
+                return res.status(401).json({
+                    resp: true,
+                    msj: 'Login unsuccessful',
+                    users: { 'id': 'invalid','person_id': 'invalid', 'phone': 'invalid', 'users': 'invalid' },
+                    token: 'invalid',
+                    refreshToken: 'invalid'
+                })
+            }
+
+            let refreshToken = randToken.generate(100); // tạo 1 refresh token ngẫu nhiên
+	        if (users.token == null) {
+                console.log(users.token);
+		    // Nếu user này chưa có refresh token thì lưu refresh token đó vào database
+		       await pool.query(`CALL SP_UPDATE_TOKEN(?,?);`,[users.persona_id, refreshToken]);
+	        } else {
+		    // Nếu user này đã có refresh token thì lấy refresh token đó từ database
+		    refreshToken = users.token;
+	        }
+
+            console.log('token: '+ token);
+            console.log('refreshToken: '+ refreshToken);
+            
+
+            res.status(200).json({
+                resp: true,
+                msj: 'Welcome to ....',
+                users: { 'id': users.id, 'person_id': users.persona_id, 'phone': users.phone, 'image': users.image },
+                token: token,
+                refreshToken: refreshToken
+            });
+
+            
+        }else{
+
+            return res.status(400).json({
+                resp: false,
+                msj: 'Wrong Credentials',
+                users: { 'id': 'invalid', 'phone': 'invalid', 'users': 'invalid' },
+                token: 'invalid',
+                refreshToken: 'invalid'
+            });
+        }
+    }else{
+        return res.status(400).json({
+            resp: false,
+            msj: 'Wrong Credentials',
+            users: { 'id': 'invalid', 'phone': 'invalid', 'users' : 'invalid' },
+            token: 'invalid',
+            refreshToken: 'invalid'
+        });
+    }
+}
+
 const RefreshToken = async ( req, res = response ) =>{
 
     // Lấy access token từ header
@@ -193,5 +274,6 @@ const RenewToken = async ( req, res = response ) => {
 module.exports = {
     LoginUser,
     RenewToken,
-    RefreshToken
+    RefreshToken,
+    LoginStaff
 }

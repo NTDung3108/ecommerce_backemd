@@ -8,6 +8,7 @@ const changePhotoProfile = async (req, res = response ) => {
 
     const { uidPerson } = req.body;
     const pathNew = req.file.filename;
+    console.log(req.file);
 
     if(uidPerson == undefined || pathNew == undefined){
         return res.status(400).json({

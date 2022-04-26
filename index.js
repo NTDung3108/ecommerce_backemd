@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'src/Uploads/Profile')));
 app.use(express.static(path.join(__dirname, 'src/Uploads/Home')));
 app.use(express.static(path.join(__dirname, 'src/Uploads/Products')));
 app.use(express.static(path.join(__dirname, 'src/Uploads/Categories')));
+app.use(express.static(path.join(__dirname, 'src/Uploads/Brands')));
 
 // io.on('connection', client => {
 //     console.log(`New client connected`);
