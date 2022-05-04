@@ -204,7 +204,7 @@ const getBrandList = async (req, res = response) => {
 
 const getAllProducts = async (req, res = response) => {
 
-    const rows = await pool.query('SELECT * FROM Products');
+    const rows = await pool.query('SELECT * FROM Products WHERE status = 1');
 
     console.log(rows);
 

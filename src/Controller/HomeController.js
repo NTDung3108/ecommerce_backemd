@@ -3,7 +3,7 @@ const pool = require('../Database/database');
 
 const ListCategoriesHome =  async ( req, res = response ) => {
 
-    const categories = await pool.query('SELECT * FROM Category LIMIT 5');
+    const categories = await pool.query('SELECT * FROM Category WHERE status = 1 LIMIT 5');
 
     if( categories.length > 0 ){
 
@@ -54,7 +54,7 @@ const ListProductsHome = async ( req, res = response ) => {
 
 const ListCategoriesAll = async ( req, res = response ) => {
 
-    const category = await pool.query('SELECT*FROM Category');
+    const category = await pool.query('SELECT*FROM Category WHERE status = 1');
 
     if( category.length > 0){
 
@@ -74,7 +74,7 @@ const ListCategoriesAll = async ( req, res = response ) => {
 
 const ListSubCategoriesAll = async ( req, res = response ) => {
 
-    const subCategory = await pool.query('SELECT*FROM subcategory WHERE category_id = ?', [req.params.idCategory]);
+    const subCategory = await pool.query('SELECT*FROM subcategory WHERE category_id = ? AND status = 1', [req.params.idCategory]);
 
     if( subCategory.length > 0){
 
@@ -114,7 +114,7 @@ const ListDiscaountBannerHome =  async ( req, res = response ) => {
 
 const ListSubcategoriesHome =  async ( req, res = response ) => {
     
-    const subcategories = await pool.query('SELECT*FROM subcategory ORDER BY views DESC LIMIT 5');
+    const subcategories = await pool.query('SELECT*FROM subcategory WHERE status = 1 ORDER BY views DESC LIMIT 5');
 
     if( subcategories.length > 0 ){
 
@@ -134,7 +134,7 @@ const ListSubcategoriesHome =  async ( req, res = response ) => {
 
 const getAllSubCategories = async ( req, res = response ) => {
 
-    const subCategory = await pool.query('SELECT*FROM subcategory');
+    const subCategory = await pool.query('SELECT*FROM subcategory WHERE status = 1');
 
     if( subCategory.length > 0){
 

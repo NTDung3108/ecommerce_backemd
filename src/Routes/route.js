@@ -15,6 +15,10 @@ const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurcha
 const { addNewProduct, deleteProduct, getProductById} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders } = require('../Controller/OrdersControllerStaff');
+const { getAllUsers, getAllStaff, verifyStaff } = require('../Controller/UserControllerSaff');
+const { topBuyers } = require('../Controller/AdminHomeContronller');
+
+
 
 const router = Router();
 
@@ -108,5 +112,13 @@ router.get('/api/staff/get-all-brands', getAllBrands);
 router.delete('/api/staff/delete-brands', deleteBrands);
 
 router.get('/api/staff/get-all-orders', getAllOrders);
+
+router.get('/api/staff/top-buyer', topBuyers);
+
+router.get('/api/staff/get-all-user', validateToken, getAllUsers);
+router.get('/api/staff/get-all-staff', validateToken, getAllStaff);
+router.put('/api/staff/verify-staff', validateToken, verifyStaff);
+
+
 
 module.exports = router;

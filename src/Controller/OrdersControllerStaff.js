@@ -19,8 +19,6 @@ const getAllOrders = async (req, res = response) => {
     }
 };
 
-
-
 module.exports = {
     getAllOrders
 }

@@ -40,8 +40,25 @@ var product_storage = multer.diskStorage({
 
   const uploadsBrands = multer({ storage: brands_storage });
 
+  // Khởi tạo biến cấu hình cho việc lưu trữ file upload
+var categories_storage = multer.diskStorage({
+  // Định nghĩa nơi file upload sẽ được lưu lại
+  destination: (req, file, callback) => {
+    callback(null, 'src/Uploads/Categories');
+  },
+  filename: (req, file, callback) => {
+    // Tên của file thì mình nối thêm một cái nhãn thời gian để tránh bị trùng tên file.
+    let filename = `${Date.now()}-categories-${file.originalname}`;
+    callback(null, filename);
+  }
+});
+// Khởi tạo middleware uploadManyFiles với cấu hình như ở trên,
+// Bên trong hàm .array() truyền vào name của thẻ input, ở đây mình đặt là "many-files", và tham số thứ hai là giới hạn số file được phép upload mỗi lần, mình sẽ để là 17 (con số mà mình yêu thích). Các bạn thích để bao nhiêu cũng được.
+const uploadPictures = multer({storage: categories_storage});
+
 module.exports = {
     uploadsProfile,
     uploadManyFiles,
-    uploadsBrands
+    uploadsBrands,
+    uploadPictures
 }

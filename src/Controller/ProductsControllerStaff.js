@@ -152,7 +152,7 @@ const getProductById = async (req, res = response) => {
             });
         }
 
-        const row = await pool.query("SELECT*FROM products WHERE idProduct = ?",[req.params.id]);
+        const row = await pool.query("SELECT*FROM products WHERE idProduct = ? WHERE status = 1",[req.params.id]);
         
         const product = row[0];
 
