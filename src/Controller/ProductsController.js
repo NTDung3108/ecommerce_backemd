@@ -70,6 +70,8 @@ const saveOrderProducts = async (req, res = response) => {
         } else {
 
             const db = await pool.query('INSERT INTO orderBuy (user_id, status, datee, amount, address, note, payment) VALUES (?,?,?,?,?,?,?)', [uid, status, date, amount, address, note, payment]);
+            
+            console.log(db);
 
             console.log(products[0]);
 
