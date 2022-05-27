@@ -4,7 +4,9 @@ const pool = require('../Database/database');
 
 const getAllUsers = async (req, res = response) => {
     try {
-        const rows = await pool.query(`CALL SP_GET_ALL_USER`);
+        const rows = await pool.query(`CALL SP_GET_ALL_USER();`);
+
+        console.log(rows);
 
         const users = rows[0];
 

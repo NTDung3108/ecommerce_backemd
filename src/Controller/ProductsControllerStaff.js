@@ -179,8 +179,47 @@ const getProductById = async (req, res = response) => {
     }
 }
 
+const getAllProductStaff = async(req, res = response) => {
+    try {
+    
+        const row = await pool.query(`CALL SP_GET_PRODUCT_STAFF();`);
+        
+        const product = row[0];
+
+        console.log(product);
+
+        if(product == null){
+            return res.json({
+                resp : false,
+                msj : 'All Product Fail',
+                product: []
+            });
+        }
+
+        for(i=0;i<product.length;i++){
+            const colors = JSON.parse(product[i].colors);
+    
+            product[i].colors = colors;
+        }
+        
+        return res.status(200).json({
+            resp : true,
+            msj : 'All Product',
+            product: product
+        });
+
+    } catch (error) {
+        return res.json({
+            resp : false,
+            msj : error,
+            product: []
+        });
+    }
+}
+
 module.exports = {
     addNewProduct,
     deleteProduct,
-    getProductById
+    getProductById,
+    getAllProductStaff
 }
