@@ -144,6 +144,7 @@ const deleteProduct = async (req, res = response) =>{
 
 const getProductById = async (req, res = response) => {
     try {
+        console.log(req.params.id);
         if(req.params.id == undefined || req.params.id == ''){
             return res.status(400).json({
                 resp : false,
@@ -152,7 +153,7 @@ const getProductById = async (req, res = response) => {
             });
         }
 
-        const row = await pool.query("SELECT*FROM products WHERE idProduct = ? WHERE status = 1",[req.params.id]);
+        const row = await pool.query("SELECT*FROM products WHERE idProduct = ? AND status = 1;",[req.params.id]);
         
         const product = row[0];
 

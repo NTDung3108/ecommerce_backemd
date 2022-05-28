@@ -18,6 +18,7 @@ const { getAllOrders } = require('../Controller/OrdersControllerStaff');
 const { getAllUsers, getAllStaff, verifyStaff } = require('../Controller/UserControllerSaff');
 const { topBuyers } = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
+const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
 
 
 
@@ -122,5 +123,9 @@ router.get('/api/staff/get-all-staff', validateToken, getAllStaff);
 router.put('/api/staff/verify-staff', validateToken, verifyStaff);
 
 router.get('/api/get-all-discount', getAllDiscount);
+
+router.get('/api/get-rating/:productId', validateToken, getRating);
+router.get('/api/get-avg-rating/:productId', getAVGRating);
+router.post('/api/new-rating', addNewRating);
 
 module.exports = router;
