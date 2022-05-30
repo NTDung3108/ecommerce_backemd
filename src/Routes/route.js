@@ -1,3 +1,4 @@
+const cors = require('cors');
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { createUser, createStaff} = require('../Controller/Register');
@@ -127,5 +128,7 @@ router.get('/api/get-all-discount', getAllDiscount);
 router.get('/api/get-rating/:productId', validateToken, getRating);
 router.get('/api/get-avg-rating/:productId', getAVGRating);
 router.post('/api/new-rating', addNewRating);
+
+router.get('/api/get-all-order', cors(), getAllOrders);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-
+const cors = require('cors');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -8,7 +8,7 @@ const io = require('socket.io')(server);
 require('dotenv').config();
 var port = 3000;
 
-var host = '192.168.30.105';
+var host = '10.50.10.135';
 
 // Middleware
 app.use(express.json());
@@ -70,5 +70,6 @@ io.on('connection', client => {
     })
 })
 
+app.use(cors())
 
 server.listen(port, host, () => console.log('Listen on port ' + port + host));
