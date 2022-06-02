@@ -15,7 +15,7 @@ const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurcha
     updateOrderStatus} = require('../Controller/ProductsController');
 const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
-const { getAllOrders, getDataStatistic1 } = require('../Controller/OrdersControllerStaff');
+const { getAllOrders, getDataStatistic1,exportInvoice } = require('../Controller/OrdersControllerStaff');
 const { getAllUsers, getAllStaff, verifyStaff } = require('../Controller/UserControllerSaff');
 const { topBuyers } = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
@@ -131,5 +131,7 @@ router.post('/api/new-rating', addNewRating);
 
 router.get('/api/get-all-order', cors(), getAllOrders);
 router.get('/api/statistic-1', cors(), getDataStatistic1);
+router.get('/api/export_invoice/:orderId', cors(), exportInvoice);
+
 
 module.exports = router;

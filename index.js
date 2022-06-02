@@ -8,7 +8,7 @@ const io = require('socket.io')(server);
 require('dotenv').config();
 var port = 3000;
 
-var host = '10.50.10.135';//'192.168.2.101';
+var host = '192.168.2.101';//'10.50.10.135';//
 
 // Middleware
 app.use(express.json());
@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'src/Uploads/Products')));
 app.use(express.static(path.join(__dirname, 'src/Uploads/Categories')));
 app.use(express.static(path.join(__dirname, 'src/Uploads/Brands')));
 app.use(express.static(path.join(__dirname, 'src/Uploads/Discount')));
-
+app.use(express.static(path.join(__dirname, 'src/Download')));
 // io.on('connection', client => {
 //     console.log(`New client connected`);
 //     client.on('fromClient', data => { 
