@@ -5,7 +5,7 @@ var moment = require('moment-timezone');
 
 const getAllOrders = async (req, res = response, next) => {
     try {
-        const row = await pool.query(`CALL SP_GET_ALL_ORDERS;`);
+        const row = await pool.query(`CALL SP_GET_ALL_ORDERS();`);
         const orders = row[0];
 
         if(orders.length == 0){
@@ -36,6 +36,36 @@ const getAllOrders = async (req, res = response, next) => {
     }
 };
 
+const getDataStatistic1 = async (req, res = response, next) => {
+    var starTime = req.query.starTime;
+    var endTime = req.query.endTime;
+    try {
+        const row = await pool.query(`CALL SP_GET_STATISTIC_1(?, ?);`,[starTime, endTime]);
+        const statistic = row[0];
+        console.log(statistic);
+
+        if(statistic.length == 0){
+            return res.status(200).json({
+                resp : true,
+                msj : 'No data',
+                revenue: []
+            });
+        }
+        return res.status(200).json({
+            resp : true,
+            msj : 'Success',
+            revenue: statistic
+        });
+    } catch (error) {
+        return res.json({
+            resp : false,
+            msj : error,
+            revenue: []
+        });
+    }
+};
+
 module.exports = {
-    getAllOrders
+    getAllOrders,
+    getDataStatistic1
 }
