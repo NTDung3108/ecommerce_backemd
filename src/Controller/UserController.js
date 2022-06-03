@@ -67,22 +67,29 @@ const getPersonalInformation = async ( req, res = response ) => {
 const updateFirstName = async ( req, res = response ) => {
 
     const uid = req.uid;
+    const group_id = req.group_id;
     const {firstName} = req.body;
 
     console.log(firstName);
-
-    if(firstName != undefined){
-        await pool.query('UPDATE person SET firstName = ? WHERE uid = ?',[firstName, uid]);
-
-        return res.status(200).json({
-            resp: true,
-            msj: 'Update success',
-        });
-    }else{
-
-        return res.status(400).json({
+    try {
+        if(firstName != undefined && group_id == 3){
+            await pool.query('UPDATE person SET firstName = ? WHERE uid = ?',[firstName, uid]);
+    
+            return res.json({
+                resp: true,
+                msj: 'Update success',
+            });
+        }else{
+    
+            return res.json({
+                resp: false,
+                msj: 'Something wrong',
+            });
+        }
+    } catch (error) {
+        return res.json({
             resp: false,
-            msj: 'Something wrong',
+            msj: error,
         });
     }
 }

@@ -123,22 +123,102 @@ const exportInvoice = async (req, res = response, next) => {
         
      data = data + '│'+(i+1)+' |'+productName+'│'+quantity+'│'+price+'|'+amount_1+'|\n'
     }
-    data = data + '┗━━┙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙━━━┙━━━━━━━━━━━━━━━━━━┙━━━━━━━━━━━━━━━━━━━┙\n'
-             + '\n Tong gia: '+amount
-             + '\n \t\t\t\t\t\t\t Ngay '+("0" + date.getDate()).slice(-2)+' thang '+("0" + (date.getMonth() + 1)).slice(-2)+' nam '+date.getFullYear()+' \n'
-             + '\t Khach Hang \t\t\t\t Nguoi viet hoa don'     
+    
+    if(invoiceData[0].payment == 'COD'){
+        data = data + '┗━━┙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙━━━┙━━━━━━━━━━━━━━━━━━┙━━━━━━━━━━━━━━━━━━━┙\n'
+             + '\n Tong gia: '+amount+' [ chua thanh toan ]'
+             + '\n \t\t\t\t\t     Ngay '+("0" + date.getDate()).slice(-2)+' thang '+("0" + (date.getMonth() + 1)).slice(-2)+' nam '+date.getFullYear()+' \n'
+             + '\t Khach Hang \t\t\t\tNguoi viet hoa don' 
+    }else if(invoiceData[0].payment == 'VNPay'){
+        data = data + '┗━━┙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙━━━┙━━━━━━━━━━━━━━━━━━┙━━━━━━━━━━━━━━━━━━━┙\n'
+             + '\n Tong gia: '+amount+' [ da thanh toan ]'
+             + '\n \t\t\t\t\t     Ngay '+("0" + date.getDate()).slice(-2)+' thang '+("0" + (date.getMonth() + 1)).slice(-2)+' nam '+date.getFullYear()+' \n'
+             + '\t Khach Hang \t\t\t\tNguoi viet hoa don' 
+    }
 
-    fs.writeFile('src/Download/input.txt', data,  function(err) {
+    const file = 'src/Download/HD'+req.params.orderId+'.txt';
+
+    fs.writeFile(file, data,  function(err) {
         if (err) {
            return console.error(err);
         }
     console.log("Ghi du lieu vao file thanh cong!");
     console.log("Doc du lieu vua duoc ghi");
+
+    fs.readFile(file, function (err, data) {
+        if (err) {
+           return console.error(err);
+        }
+        console.log("Noi dung file: " + data.toString());
+     });
+     var response = res.download(file);
+     console.log(response);
   });
 }
+
+const getOrderDetail = async (req, res = response, next) => {
+    try {
+        const row = await pool.query(`CALL SP_INFO_USER_ORDER(?);`,[req.params.orderId]);
+        const info = row[0];
+
+        const row2 = await pool.query(`CALL SP_GET_ORDER_DETAIL(?);`,[req.params.orderId]);
+        const details = row2[0];
+
+        console.log(info);
+        console.log(details);
+
+        if(info.length == 0 || details.length == 0){
+            return res.json({
+                resp : true,
+                msj : 'No data',
+                order_detail: {}
+            });
+        }
+        return res.json({
+            resp : true,
+            msj : 'Order Detail Data',
+            order_detail: {
+                order_id: info[0].uidOrderBuy,
+                user_name: info[0].firstName+' '+ info[0].lastName,
+                address: info[0].address,
+                phone: info[0].phone,
+                amount: info[0].amount,
+                note: info[0].note ?? '',
+                reason: info[0].reason ?? '',
+                payment: info[0].payment,
+                status: info[0].status,
+                details: details 
+            }
+        });
+    } catch (error) {
+        return res.json({
+            resp : false,
+            msj : error,
+            order_detail: {}
+        });
+    }
+};
+
+// DELIMITER //
+// CREATE PROCEDURE SP_INFO_USER_ORDER(IN in_orderId INT)
+// BEGIN
+// 	SELECT o.uidOrderBuy, p.firstName, p.lastName, o.address, p.phone, o.amount, o.note, o.reason, o.payment, o.status FROM orderbuy AS o
+// 	INNER JOIN person AS p ON p.uid = o.user_id
+//     WHERE o.uidOrderBuy = in_orderId AND ( o.status = 2 OR o.status = 1 OR o.status = 0) ;
+// END//
+// DELIMITER //
+// CREATE PROCEDURE SP_GET_ORDER_DETAIL(IN in_orderId INT)
+// BEGIN
+// 	SELECT pd.nameProduct, d.quantity, d.price FROM orderbuy AS o
+//     INNER JOIN orderdetails AS d ON d.orderBuy_id = o.uidOrderBuy
+//     INNER JOIN products AS pd ON pd.idProduct = d.product_id
+//     WHERE o.uidOrderBuy = in_orderId;
+// END//
+
 
 module.exports = {
     getAllOrders,
     getDataStatistic1,
-    exportInvoice
+    exportInvoice,
+    getOrderDetail
 }
