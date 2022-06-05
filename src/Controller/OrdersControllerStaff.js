@@ -129,7 +129,7 @@ const exportInvoice = async (req, res = response, next) => {
              + '\n Tong gia: '+amount+' [ chua thanh toan ]'
              + '\n \t\t\t\t\t     Ngay '+("0" + date.getDate()).slice(-2)+' thang '+("0" + (date.getMonth() + 1)).slice(-2)+' nam '+date.getFullYear()+' \n'
              + '\t Khach Hang \t\t\t\tNguoi viet hoa don' 
-    }else if(invoiceData[0].payment == 'VNPay'){
+    }else{
         data = data + '┗━━┙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙━━━┙━━━━━━━━━━━━━━━━━━┙━━━━━━━━━━━━━━━━━━━┙\n'
              + '\n Tong gia: '+amount+' [ da thanh toan ]'
              + '\n \t\t\t\t\t     Ngay '+("0" + date.getDate()).slice(-2)+' thang '+("0" + (date.getMonth() + 1)).slice(-2)+' nam '+date.getFullYear()+' \n'
@@ -198,23 +198,6 @@ const getOrderDetail = async (req, res = response, next) => {
         });
     }
 };
-
-// DELIMITER //
-// CREATE PROCEDURE SP_INFO_USER_ORDER(IN in_orderId INT)
-// BEGIN
-// 	SELECT o.uidOrderBuy, p.firstName, p.lastName, o.address, p.phone, o.amount, o.note, o.reason, o.payment, o.status FROM orderbuy AS o
-// 	INNER JOIN person AS p ON p.uid = o.user_id
-//     WHERE o.uidOrderBuy = in_orderId AND ( o.status = 2 OR o.status = 1 OR o.status = 0) ;
-// END//
-// DELIMITER //
-// CREATE PROCEDURE SP_GET_ORDER_DETAIL(IN in_orderId INT)
-// BEGIN
-// 	SELECT pd.nameProduct, d.quantity, d.price FROM orderbuy AS o
-//     INNER JOIN orderdetails AS d ON d.orderBuy_id = o.uidOrderBuy
-//     INNER JOIN products AS pd ON pd.idProduct = d.product_id
-//     WHERE o.uidOrderBuy = in_orderId;
-// END//
-
 
 module.exports = {
     getAllOrders,
