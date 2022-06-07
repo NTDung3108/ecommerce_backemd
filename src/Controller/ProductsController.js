@@ -70,7 +70,7 @@ const saveOrderProducts = async (req, res = response) => {
         } else {
 
             const db = await pool.query('INSERT INTO orderBuy (user_id, status, datee, amount, address, note, payment) VALUES (?,?,?,?,?,?,?)', [uid, status, date, amount, address, note, payment]);
-            
+
             console.log(db);
 
             console.log(products[0]);
@@ -292,6 +292,44 @@ const updateOrderStatus = async (req, res = response) => {
     });
 }
 
+const getProductDetail = async (req, res = response) => {
+
+    try {
+        const rows = await pool.query('CALL SP_GET_PRODUCT_DETAIL(?);', [req.params.productId]);
+
+        console.log(rows[0][0]);
+
+        var product = rows[0][0];
+
+        if (product == null) {
+            return res.json({
+                resp: true,
+                msj: 'No Product',
+                products: product
+            });
+        }
+
+        const picture = JSON.parse(product.picture);
+        const colors = JSON.parse(product.colors);
+        product.picture = picture;
+        product.colors = colors;
+
+        return res.json({
+            resp: true,
+            msj: 'Product Detail',
+            products: product
+        });
+
+    } catch (error) {
+        return res.json({
+            resp: true,
+            msj: error,
+            product: null
+        });
+    }
+
+}
+
 module.exports = {
     addFavoriteProduct,
     productFavoriteForUser,
@@ -302,5 +340,6 @@ module.exports = {
     getAllProducts,
     checkQuantityProduct,
     getDetailOders,
-    updateOrderStatus
+    updateOrderStatus,
+    getProductDetail
 }

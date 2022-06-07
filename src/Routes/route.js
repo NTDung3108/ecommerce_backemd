@@ -12,10 +12,10 @@ const { ListProductsHome, ListCategoriesAll, ListCategoriesHome, ListSubCategori
      ListDiscaountBannerHome, ListSubcategoriesHome, getAllSubCategories} = require('../Controller/HomeController');
 const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurchasedProduct, 
     getProductsForCategories, getBrandList, getAllProducts, checkQuantityProduct, getDetailOders,
-    updateOrderStatus} = require('../Controller/ProductsController');
+    updateOrderStatus, getProductDetail} = require('../Controller/ProductsController');
 const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
-const { getAllOrders, getDataStatistic1, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
+const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
 const { getAllUsers, getAllStaff, verifyStaff } = require('../Controller/UserControllerSaff');
 const { topBuyers } = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
@@ -86,6 +86,7 @@ router.get('/api/get-all-product', getAllProducts);
 router.put('/api/update-quantity-product', validateToken, checkQuantityProduct);
 router.get('/api/get-detail-by-id/:orderId', validateToken, getDetailOders);
 router.put('/api/update-order-status', validateToken, updateOrderStatus);
+router.get('/api/get-detail-product/:productId', getProductDetail);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -130,7 +131,7 @@ router.get('/api/get-avg-rating/:productId', getAVGRating);
 router.post('/api/new-rating', addNewRating);
 
 router.get('/api/get-all-order', cors(), getAllOrders);
-router.get('/api/statistic-1', cors(), getDataStatistic1);
+router.get('/api/revenue-statistics', cors(), revenueStatistics);
 router.get('/api/export_invoice/:orderId', cors(), exportInvoice);
 router.get('/api/order_details/:orderId', cors(), getOrderDetail);
 

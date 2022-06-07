@@ -37,13 +37,19 @@ const getAllOrders = async (req, res = response, next) => {
     }
 };
 
-const getDataStatistic1 = async (req, res = response, next) => {
+const revenueStatistics = async (req, res = response, next) => {
     var starTime = req.query.starTime;
     var endTime = req.query.endTime;
     try {
-        const row = await pool.query(`CALL SP_GET_STATISTIC_1(?, ?);`,[starTime, endTime]);
+        const row = await pool.query('CALL  SP_REVENUE_STATIS(?,?);',[starTime, endTime]);
         const statistic = row[0];
         console.log(statistic);
+        for (i = 0; i < statistic.length; i++) {
+            var a = moment.tz(statistic[i].datee2, "Asia/Ho_Chi_Minh");
+            console.log(a.format('DD/MM/yyyy'));
+    
+            statistic[i].datee2 = a.format('DD/MM/yyyy');
+        }
 
         if(statistic.length == 0){
             return res.status(200).json({
@@ -201,7 +207,7 @@ const getOrderDetail = async (req, res = response, next) => {
 
 module.exports = {
     getAllOrders,
-    getDataStatistic1,
+    revenueStatistics,
     exportInvoice,
     getOrderDetail
 }
