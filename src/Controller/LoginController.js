@@ -88,7 +88,7 @@ const LoginUser = async ( req, res = response ) => {
     }
 }
 
-const LoginStaff = async ( req, res = response ) => {
+const LoginStaff = async ( req, res = response, next) => {
 
     const {phone, password} = req.body;
 
@@ -101,7 +101,7 @@ const LoginStaff = async ( req, res = response ) => {
 
         let validatedPassword = await bcrypt.compareSync(password, users.passwordd);
 
-        if( validatedPassword && users.group_id != 3 && users.isVerify == 1 && users.statuss == 1){
+        if( validatedPassword && users.group_id != 2  && users.statuss == 1){
 
             console.log(users.persona_id);
 
