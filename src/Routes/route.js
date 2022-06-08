@@ -17,7 +17,7 @@ const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = requ
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
 const { getAllUsers, getAllStaff, verifyStaff } = require('../Controller/UserControllerSaff');
-const { topBuyers } = require('../Controller/AdminHomeContronller');
+const { topBuyers, revenue, sumProduct, sumOrder, topProduct} = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
 const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
 
@@ -88,6 +88,9 @@ router.get('/api/get-detail-by-id/:orderId', validateToken, getDetailOders);
 router.put('/api/update-order-status', validateToken, updateOrderStatus);
 router.get('/api/get-detail-product/:productId', getProductDetail);
 
+router.get('/api/get-avg-rating/:productId', getAVGRating);
+router.post('/api/new-rating', addNewRating);
+
 ////////////////////////////////////////////////////////////////////////////////////////
 
 //Staff api//
@@ -98,19 +101,19 @@ router.post( '/api/register-staff', [
     check('phone', 'PhoneNumber is required').isMobilePhone(),
     check('password', 'Password is required').not().isEmpty(),
     check('idUser', 'idUser is required').not().isEmpty(),
-    ValidatedAuth
+    ValidatedAuth,
 ], createStaff);
 
 router.post('/api/login-staff',[
     check('phone', 'PhoneNumber is required').isMobilePhone(),
     check('password', 'Password is required').not().isEmpty(),
-    ValidatedAuth
+    ValidatedAuth,
 ], LoginStaff );
 
 router.post('/api/staff/add-new-product', uploadManyFiles.array('multi-files',5), addNewProduct);
 router.delete('/api/staff/delete-product/:idProduct', deleteProduct);
-router.get('/api/staff/get-product-by-id/:id',getProductById)
-router.get('/api/staff/get-all-product',getAllProductStaff)
+router.get('/api/staff/get-product-by-id/:id', getProductById)
+router.get('/api/staff/get-all-product', getAllProductStaff)
 
 router.post('/api/staff/add-new-brands', uploadsBrands.single('brands'), addNewBrands);
 router.get('/api/staff/get-all-brands', getAllBrands);
@@ -118,22 +121,24 @@ router.delete('/api/staff/delete-brands', deleteBrands);
 
 router.get('/api/staff/get-all-orders', getAllOrders);
 
-router.get('/api/staff/top-buyer', topBuyers);
+router.get('/api/staff/top-buyer', cors(), topBuyers);
 
-router.get('/api/staff/get-all-user',  getAllUsers);
+router.get('/api/staff/get-all-user', getAllUsers);
 router.get('/api/staff/get-all-staff', validateToken, getAllStaff);
 router.put('/api/staff/verify-staff', validateToken, verifyStaff);
 
 router.get('/api/get-all-discount', getAllDiscount);
 
 router.get('/api/get-rating/:productId', validateToken, getRating);
-router.get('/api/get-avg-rating/:productId', getAVGRating);
-router.post('/api/new-rating', addNewRating);
 
 router.get('/api/get-all-order', cors(), getAllOrders);
 router.get('/api/revenue-statistics', cors(), revenueStatistics);
 router.get('/api/export_invoice/:orderId', cors(), exportInvoice);
 router.get('/api/order_details/:orderId', cors(), getOrderDetail);
 
+router.get('/api/revenue-month', cors(), revenue);
+router.get('/api/sum-product', cors(), sumProduct);
+router.get('/api/sum-order', cors(), sumOrder);
+router.get('/api/top-Products', cors(), topProduct);
 
 module.exports = router;

@@ -18,66 +18,122 @@ const topBuyers = async (req, res = response) => {
     }
 };
 
-const revenue = async(req, res = response) => {
+const revenue = async(req, res = response, next) => {
     try {
-        const revenue = pool.query('SELECT SUM(amount) AS amount FROM orderbuy WHERE status = 2');
+        const revenue = await pool.query('SELECT amount, tax, total_original FROM orderbuy WHERE datee2 like'+'\''+req.query.time+'%\''+'AND status = 2;');
+
+        console.log(revenue[0]);
+
+        if(revenue == undefined){
+            return res.json({
+                resp : false,
+                msj : 'Revenue',
+                revenue: {}
+            });
+        }
 
         return res.json({
             resp : true,
             msj : 'Revenue',
-            revenue: revenue
+            revenue: revenue[0]
         });
         
     } catch (error) {
         return res.json({
             resp : false,
             msj : error,
-            revenue: null
+            revenue: {}
         });
     }
 }
 
-const sumProduct = async(req, res = response) => {
+const sumProduct = async(req, res = response, next) => {
     try {
-        const sum = pool.query('SELECT COUNT(idProduct) FROM products WHERE status = 1');
+        const sum = await pool.query('SELECT SUM(quantily) as quantity FROM products WHERE status = 1');
+
+        if(sum == undefined){
+            return res.json({
+                resp : false,
+                msj : 'Sum Product',
+                sumProduct: 0
+            });
+        }
 
         return res.json({
             resp : true,
-            msj : 'Revenue',
-            sumProduct: sum
+            msj : 'Sum Product',
+            sumProduct: sum[0].quantity
         });
         
     } catch (error) {
         return res.json({
             resp : false,
             msj : error,
-            sumProduct: null
+            sumProduct: 0
         });
     }
 }
 
-const sumOrder = async(req, res = response) => {
+const sumOrder = async(req, res = response, next) => {
     try {
-        const sum = pool.query('SELECT COUNT(uidOrderBuy) AS amount FROM orderbuy WHERE status = 2');
+        const sum = await pool.query('SELECT COUNT(uidOrderBuy) AS amount FROM orderbuy WHERE status = 2 AND datee2 like '+'\''+req.query.time+'%\'');
+
+        if(sum == undefined){
+            return res.json({
+                resp : false,
+                msj : 'sum order',
+                sumProduct: 0
+            });
+        }
 
         return res.json({
             resp : true,
-            msj : 'Revenue',
-            sumOrder: sum
+            msj : 'sum order',
+            sumOrder: sum[0].amount
         });
         
     } catch (error) {
         return res.json({
             resp : false,
             msj : error,
-            sumOrder: null
+            sumOrder: 0
         });
     }
 }
+
+const topProduct= async (req, res = response, next) => {
+    try {
+        const products = await pool.query('SELECT nameProduct, picture, sold, price FROM products WHERE status = 1 ORDER BY sold DESC Limit 10');
+
+        if(products == undefined){
+            return res.json({
+                resp : false,
+                msj : 'no products',
+                topProduct: []
+            });
+        }
+
+        const picture = JSON.parse(products[0].picture);
+        products[0].picture = picture;
+
+        return res.status(200).json({
+            resp : true,
+            msj : 'Success',
+            topProducts: products[0]
+        });
+    } catch (error) {
+        return res.json({
+            resp : false,
+            msj : error,
+            topProducts: []
+        });
+    }
+};
 
 module.exports = {
     topBuyers,
     revenue,
     sumProduct,
-    sumOrder
+    sumOrder,
+    topProduct
 }
