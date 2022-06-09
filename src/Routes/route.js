@@ -16,10 +16,11 @@ const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurcha
 const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
-const { getAllUsers, getAllStaff, verifyStaff } = require('../Controller/UserControllerSaff');
+const { getAllUsers, getAllStaff, verifyStaff, registerInfoStaff} = require('../Controller/UserControllerSaff');
 const { topBuyers, revenue, sumProduct, sumOrder, topProduct} = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
 const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
+const {  } = require('../Controller/CategoryControllerStaff');
 
 
 
@@ -110,6 +111,8 @@ router.post('/api/login-staff',[
     ValidatedAuth,
 ], LoginStaff );
 
+router.put('/api/staff/register', registerInfoStaff);
+
 router.post('/api/staff/add-new-product', uploadManyFiles.array('multi-files',5), addNewProduct);
 router.delete('/api/staff/delete-product/:idProduct', deleteProduct);
 router.get('/api/staff/get-product-by-id/:id', getProductById)
@@ -131,14 +134,14 @@ router.get('/api/get-all-discount', getAllDiscount);
 
 router.get('/api/get-rating/:productId', validateToken, getRating);
 
-router.get('/api/get-all-order', cors(), getAllOrders);
-router.get('/api/revenue-statistics', cors(), revenueStatistics);
-router.get('/api/export_invoice/:orderId', cors(), exportInvoice);
-router.get('/api/order_details/:orderId', cors(), getOrderDetail);
+router.get('/api/get-all-order', [validateToken, cors()], getAllOrders);
+router.get('/api/revenue-statistics', [validateToken, cors()], revenueStatistics);
+router.get('/api/export_invoice/:orderId',cors(), exportInvoice);
+router.get('/api/order_details/:orderId', [validateToken, cors()], getOrderDetail);
 
-router.get('/api/revenue-month', cors(), revenue);
-router.get('/api/sum-product', cors(), sumProduct);
-router.get('/api/sum-order', cors(), sumOrder);
-router.get('/api/top-Products', cors(), topProduct);
+router.get('/api/revenue-month', [validateToken, cors()], revenue);
+router.get('/api/sum-product', [validateToken, cors()], sumProduct);
+router.get('/api/sum-order', [validateToken, cors()], sumOrder);
+router.get('/api/top-Products', [validateToken, cors()], topProduct);
 
 module.exports = router;

@@ -29,11 +29,11 @@ const createUser = async (req, res = response) => {
     }
 };
 
-const createStaff = async (req, res = response) => {
+const createStaff = async (req, res = response, next) => {
 
     const { phone, password, idUser} = req.body;
 
-    console.log(phone+password+idUser+"abc");
+    console.log(phone+password+idUser);
 
     const salt = bcrypt.genSaltSync();
     const pass = bcrypt.hashSync(password, salt);
