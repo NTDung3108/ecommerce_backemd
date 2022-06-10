@@ -193,27 +193,21 @@ const getAllProductStaff = async(req, res = response) => {
             return res.json({
                 resp : false,
                 msj : 'All Product Fail',
-                product: []
+                products: []
             });
         }
 
-        for(i=0;i<product.length;i++){
-            const colors = JSON.parse(product[i].colors);
-    
-            product[i].colors = colors;
-        }
-        
         return res.status(200).json({
             resp : true,
             msj : 'All Product',
-            product: product
+            products: product
         });
 
     } catch (error) {
         return res.json({
             resp : false,
             msj : error,
-            product: []
+            products: []
         });
     }
 }

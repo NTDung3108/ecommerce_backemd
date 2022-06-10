@@ -1,6 +1,25 @@
 const{ response } = require('express');
 const pool = require('../../Database/database');
 
+
+const getAllCategory = async (req, res = response) => {
+    try {
+
+        var row = await pool.query(`CALL SP_ADD_CATEGORY(?,?)`,[in_category, null]);
+
+        return res.json({
+            resp : true,
+            msj : 'Success',
+        });
+
+    } catch (error) {
+        return res.json({
+            resp : false,
+            msj : error,
+        });
+    }
+}
+
 const addCategory = async (req, res = response) => {
     const {in_category} = req.body;
 

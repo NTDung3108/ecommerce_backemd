@@ -91,9 +91,38 @@ const verifyStaff = async (req, res = response) => {
     }
 }
 
+const registerInfoStaff = async (req, res = response, next) => {
+
+    const {sid, nam, lastt, phone, gender, email, address} = req.body;
+
+    try {
+
+        if(sid != undefined || nam != undefined || lastt != undefined || phone != undefined || gender != undefined || email != undefined || address != undefined){
+
+            await pool.query(`CALL SP_REGISTER_STAFF_INFO(?,?,?,?,?,?,?);`,[nam, lastt, phone, gender, email, address, sid]);
+    
+            return res.status(200).json({
+                resp : true,
+                msj : 'Register info success',
+            });  
+        }
+
+        return res.json({
+            resp : false,
+            msj : 'Register info success',
+        });
+    } catch (error) {
+        return res.json({
+            resp : false,
+            msj : error,
+        });
+    }
+}
+
 
 module.exports = {
     getAllUsers,
     getAllStaff,
-    verifyStaff
+    verifyStaff,
+    registerInfoStaff,
 }

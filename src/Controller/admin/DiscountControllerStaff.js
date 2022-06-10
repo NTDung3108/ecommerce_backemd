@@ -3,7 +3,7 @@ const pool = require('../../Database/database');
 
 const getAllDiscount = async(req, res = response) => {
     try {
-        const disconnect = await pool.query('SELECT*FROM discount WHERE status = 1');
+        const disconnect = await pool.query('SELECT*FROM discount');
         console.log(disconnect);
         if(disconnect == null){
             return res.json({
