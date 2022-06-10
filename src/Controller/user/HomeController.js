@@ -1,5 +1,5 @@
 const { response } = require('express');
-const pool = require('../Database/database');
+const pool = require('../../Database/database');
 
 const ListCategoriesHome =  async ( req, res = response ) => {
 

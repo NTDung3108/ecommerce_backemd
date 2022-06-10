@@ -1,5 +1,5 @@
 const{ response } = require('express');
-const pool = require('../Database/database');
+const pool = require('../../Database/database');
 
 const addCategory = async (req, res = response) => {
     const {in_category} = req.body;
