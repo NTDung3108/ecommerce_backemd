@@ -16,7 +16,7 @@ const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurcha
 const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
-const { getAllUsers, getAllStaff, verifyStaff, registerInfoStaff} = require('../Controller/UserControllerSaff');
+const { getAllUsers, getAllStaff, verifyStaff, registerInfoStaff, getInfoStaff} = require('../Controller/UserControllerSaff');
 const { topBuyers, revenue, sumProduct, sumOrder, topProduct} = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
 const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
@@ -110,6 +110,8 @@ router.post('/api/login-staff',[
     check('password', 'Password is required').not().isEmpty(),
     ValidatedAuth,
 ], LoginStaff );
+
+router.get('/api/staff/get-info-staff/:sid', [validateToken, cors()],getInfoStaff);
 
 router.put('/api/staff/register', registerInfoStaff);
 

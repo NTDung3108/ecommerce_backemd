@@ -45,8 +45,7 @@ const revenueStatistics = async (req, res = response, next) => {
         const statistic = row[0];
         console.log(statistic);
         for (i = 0; i < statistic.length; i++) {
-            var a = moment.tz(statistic[i].datee2, "Asia/Ho_Chi_Minh");
-            console.log(a.format('DD/MM/yyyy'));
+            var a = Date(statistic[i].datee).toLocaleString();
     
             statistic[i].datee2 = a.format('DD/MM/yyyy');
         }

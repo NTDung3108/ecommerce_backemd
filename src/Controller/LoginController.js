@@ -118,6 +118,7 @@ const LoginStaff = async (req, res = response, next) => {
 
             const dataForAccessToken = {
                 uid: users.persona_id,
+                group_id: users.group_id
             };
 
             let token = await generarJsonWebToken(dataForAccessToken, accessTokenSecret, accessTokenLife);
