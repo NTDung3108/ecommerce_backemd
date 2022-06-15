@@ -20,7 +20,7 @@ const { getAllUsers, getAllStaff, verifyStaff, registerInfoStaff, getInfoStaff} 
 const { topBuyers, revenue, sumProduct, sumOrder, topProduct} = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
 const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
-const {  } = require('../Controller/CategoryControllerStaff');
+const { getAllCategory } = require('../Controller/CategoryControllerStaff');
 
 
 
@@ -133,6 +133,8 @@ router.get('/api/staff/get-all-staff', validateToken, getAllStaff);
 router.put('/api/staff/verify-staff', validateToken, verifyStaff);
 
 router.get('/api/get-all-discount', getAllDiscount);
+
+router.get('/api/staff/get-all-category', getAllCategory);
 
 router.get('/api/get-rating/:productId', validateToken, getRating);
 

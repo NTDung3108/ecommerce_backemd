@@ -5,17 +5,27 @@ const pool = require('../Database/database');
 const getAllCategory = async (req, res = response) => {
     try {
 
-        var row = await pool.query(`CALL SP_ADD_CATEGORY(?,?)`,[in_category, null]);
+        var row = await pool.query('SELECT*FROM subcategory');
+
+        if(row.lengt == 0){
+            return res.json({
+                resp : false,
+                msj : 'Subcategory is empty',
+                subcategory: []
+            });
+        }
 
         return res.json({
             resp : true,
             msj : 'Success',
+            subcategory: row
         });
 
     } catch (error) {
         return res.json({
             resp : false,
             msj : error,
+            subcategory:[]
         });
     }
 }
@@ -124,6 +134,7 @@ const updatePictureCategory = async (req, res = response) => {
 
 
 module.exports = {
+    getAllCategory,
     addCategory,
     deleteCategory,
     updateCategory,
