@@ -58,25 +58,27 @@ const productFavoriteForUser = async (req, res = response) => {
 
 const saveOrderProducts = async (req, res = response) => {
     try {
-        const { status, date, amount, address, note, payment, products } = req.body;
+        const { status, date, amount, address, note, payment, tax, totalOriginal, datee2, products } = req.body;
         const uid = req.uid;
 
-        if (status == undefined || date == undefined || amount == undefined
-            || address == undefined || payment == undefined || products == undefined) {
+        if (status == undefined || date == undefined || amount == undefined|| address == undefined 
+            || payment == undefined || tax== undefined || totalOriginal == undefined ||datee2 == undefined 
+            ||products == undefined) {
             return res.status(400).json({
                 resp: false,
                 msj: 'Somthing Wrong'
             });
         } else {
 
-            const db = await pool.query('INSERT INTO orderBuy (user_id, status, datee, amount, address, note, payment) VALUES (?,?,?,?,?,?,?)', [uid, status, date, amount, address, note, payment]);
+            const db = await pool.query('INSERT INTO orderBuy (user_id, status, datee, amount, address, note, payment, tax, total_original, datee2) VALUES (?,?,?,?,?,?,?,?,?,?)', 
+            [uid, status, date, amount, address, note, payment, tax, totalOriginal, datee2]);
 
             console.log(db);
 
             console.log(products[0]);
 
             products.forEach(e => {
-                pool.query('INSERT INTO orderDetails (orderBuy_id, product_id, quantity, price) VALUES(?,?,?,?)', [db.insertId, e.uidProduct, e.amount, e.price]);
+                pool.query('INSERT INTO orderDetails (orderBuy_id, product_id, quantity, price) VALUES(?,?,?,?)', [db.insertId, e.uidProduct, e.quantity, e.price]);
             });
 
             return res.status(200).json({
@@ -93,45 +95,58 @@ const saveOrderProducts = async (req, res = response) => {
 }
 
 const checkQuantityProduct = async (req, res = response) => {
-    const { products } = req.body;
-
-    if (products == undefined) {
-        return res.status(400).json({
+    var idProduct = req.query.idProduct;
+    var quantity = req.query.quantity;
+    if (idProduct == undefined || quantity == undefined) {
+        return res.json({
             resp: false,
             msj: 'Somthing Wrong'
         });
     }
-
-    // console.log(products[0]);
-
-    // const row = await pool.query('SELECT quantily, sold FROM products WHERE idProduct = ?', [products[0].uidProduct] );
-    //     console.log(row);
-
-    for (i = 0; i < products.length; i++) {
-
-        const row = await pool.query('SELECT nameProduct, quantily, sold FROM products WHERE idProduct = ?', [products[i].uidProduct]);
-        console.log(row[0]);
-
-        if (row.length > 0) {
-            if (products[i].amount <= row[0].quantily) {
-                var nQuantity = row[0].quantily - products[i].amount;
-                var nSold = row[0].sold + products[i].amount;
-                console.log(nQuantity + '+' + nSold);
-                await pool.query('UPDATE products SET quantily = ?, sold = ? WHERE idProduct = ?', [nQuantity, nSold, products[i].uidProduct]);
-            } else {
-                return res.status(400).json({
-                    resp: false,
-                    msj: 'the number of ' + row[0].nameProduct + 'you need to buy is more than the amount left in stock. amount: ' + row[0].quantily
-                });
-            }
+    try {
+        const row = await pool.query('SELECT nameProduct, quantily, sold FROM products WHERE idProduct = ?', [idProduct]);
+        if(row[0].quantily > parseInt(quantity)){
+            return res.json({
+                resp: true,
+                msj: 'Success'
+            });
+        }else{
+            return res.json({
+                resp: false,
+                msj: 'Quantity '+ row[0].nameProduct + ' is not enough'
+            });
         }
+    } catch (error) {
+        return res.json({
+            resp: false,
+            msj: error
+        });
     }
+}
 
-    return res.status(200).json({
-        resp: true,
-        msj: 'update number successfully'
-    });
-
+const updateQuantityProduct = async (req, res = response) => {
+    var {idProduct, quantity} = req.body;
+    if (idProduct == undefined || quantity == undefined) {
+        return res.json({
+            resp: false,
+            msj: 'Somthing Wrong'
+        });
+    }
+    try {
+        const row = await pool.query('SELECT nameProduct, quantily, sold FROM products WHERE idProduct = ?', [idProduct]);
+            var nQuantity = row[0].quantily - quantity;
+            var nSold = row[0].sold + quantity;
+            pool.query('UPDATE products SET quantily = ?, sold =? WHERE idProduct = ?',[nQuantity, nSold, idProduct]);
+            return res.json({
+                resp: true,
+                msj: 'update number successfully'
+            });
+    } catch (error) {
+        return res.json({
+            resp: false,
+            msj: error
+        });
+    }
 }
 
 const getPurchasedProduct = async (req, res = response) => {
@@ -305,7 +320,7 @@ const getProductDetail = async (req, res = response) => {
             return res.json({
                 resp: true,
                 msj: 'No Product',
-                products: product
+                detail: product
             });
         }
 
@@ -317,14 +332,14 @@ const getProductDetail = async (req, res = response) => {
         return res.json({
             resp: true,
             msj: 'Product Detail',
-            products: product
+            detail: product
         });
 
     } catch (error) {
         return res.json({
             resp: true,
             msj: error,
-            product: null
+            detail: null
         });
     }
 
@@ -341,5 +356,6 @@ module.exports = {
     checkQuantityProduct,
     getDetailOders,
     updateOrderStatus,
-    getProductDetail
+    getProductDetail,
+    updateQuantityProduct
 }

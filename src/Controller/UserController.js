@@ -37,11 +37,11 @@ const changePhotoProfile = async (req, res = response ) => {
 
 const userPersonalRegister = async ( req, res = response ) => {
 
-    const { firstname, lastname, phone, address, reference, uid} = req.body;
+    const { firstname, lastname, phone, address, gender, uid} = req.body;
 
     //const uid = req.uid;
 
-    await pool.query(`CALL SP_REGISTER_PERSONAL(?,?,?,?,?,?);`, [ firstname, lastname, phone, address, reference, uid]);
+    await pool.query(`CALL SP_REGISTER_PERSONAL(?,?,?,?,?,?);`, [ firstname, lastname, phone, address, gender, uid]);
 
     return res.json({
         resp: true,

@@ -12,7 +12,7 @@ const { ListProductsHome, ListCategoriesAll, ListCategoriesHome, ListSubCategori
      ListDiscaountBannerHome, ListSubcategoriesHome, getAllSubCategories} = require('../Controller/HomeController');
 const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurchasedProduct, 
     getProductsForCategories, getBrandList, getAllProducts, checkQuantityProduct, getDetailOders,
-    updateOrderStatus, getProductDetail} = require('../Controller/ProductsController');
+    updateOrderStatus, getProductDetail, updateQuantityProduct} = require('../Controller/ProductsController');
 const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
@@ -84,10 +84,12 @@ router.get('/api/get-purchased-products', validateToken, getPurchasedProduct);
 router.get('/api/get-products-for-subcategories/:id', getProductsForCategories);
 router.get('/api/get-brands-list/:subCategoryId', getBrandList);
 router.get('/api/get-all-product', getAllProducts);
-router.put('/api/update-quantity-product', validateToken, checkQuantityProduct);
+router.get('/api/check-quantity-product', /*validateToken,*/ checkQuantityProduct);
 router.get('/api/get-detail-by-id/:orderId', validateToken, getDetailOders);
 router.put('/api/update-order-status', validateToken, updateOrderStatus);
 router.get('/api/get-detail-product/:productId', getProductDetail);
+
+router.put('/api/update-quantity-product', updateQuantityProduct);
 
 router.get('/api/get-avg-rating/:productId', getAVGRating);
 router.post('/api/new-rating', addNewRating);
