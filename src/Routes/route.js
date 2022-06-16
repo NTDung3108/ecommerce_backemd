@@ -12,7 +12,7 @@ const { ListProductsHome, ListCategoriesAll, ListCategoriesHome, ListSubCategori
      ListDiscaountBannerHome, ListSubcategoriesHome, getAllSubCategories} = require('../Controller/HomeController');
 const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurchasedProduct, 
     getProductsForCategories, getBrandList, getAllProducts, checkQuantityProduct, getDetailOders,
-    updateOrderStatus, getProductDetail, updateQuantityProduct} = require('../Controller/ProductsController');
+    updateOrderStatus, getProductDetail, updateQuantityProduct, checkFavorite} = require('../Controller/ProductsController');
 const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
@@ -39,6 +39,7 @@ router.post('/api/login',[
     check('password', 'Password is required').not().isEmpty(),
     ValidatedAuth
 ], LoginUser );
+
 
 router.put('/api/personal/register', userPersonalRegister);
 
@@ -79,12 +80,13 @@ router.get('/api/get-all-subcategories', getAllSubCategories);
 //Products
 router.post('/api/add-Favorite-Product', validateToken, addFavoriteProduct);
 router.get('/api/product-favorite-for-user', validateToken, productFavoriteForUser);
+router.get('/api/check-favorite', validateToken, checkFavorite);
 router.post('/api/save-order-products', validateToken, saveOrderProducts);
 router.get('/api/get-purchased-products', validateToken, getPurchasedProduct);
 router.get('/api/get-products-for-subcategories/:id', getProductsForCategories);
 router.get('/api/get-brands-list/:subCategoryId', getBrandList);
 router.get('/api/get-all-product', getAllProducts);
-router.get('/api/check-quantity-product', /*validateToken,*/ checkQuantityProduct);
+router.get('/api/check-quantity-product', checkQuantityProduct);
 router.get('/api/get-detail-by-id/:orderId', validateToken, getDetailOders);
 router.put('/api/update-order-status', validateToken, updateOrderStatus);
 router.get('/api/get-detail-product/:productId', getProductDetail);

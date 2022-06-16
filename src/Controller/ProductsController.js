@@ -6,24 +6,31 @@ const addFavoriteProduct = async (req, res = response) => {
 
     const { idProduct, idUser } = req.body;
 
-    const rows = await pool.query('SELECT product_id, user_id FROM favorite WHERE product_id = ? AND user_id = ?', [idProduct, idUser]);
+    try {
+        const rows = await pool.query('SELECT product_id, user_id FROM favorite WHERE product_id = ? AND user_id = ?', [idProduct, idUser]);
 
-    console.log(rows);
-    console.log(idProduct + idUser + "");
+        console.log(rows);
+        console.log(idProduct + idUser + "");
 
-    if (rows.length == 0) {
-        await pool.query(`CALL SP_ADD_PRODUCT_FAVORITE(?,?);`, [idProduct, idUser]);
+        if (rows.length == 0) {
+            await pool.query(`CALL SP_ADD_PRODUCT_FAVORITE(?,?);`, [idProduct, idUser]);
 
+            res.json({
+                resp: true,
+                msj: 'Product add to Favorite'
+            })
+        } else {
+            await pool.query(`CALL SP_DELETE_PRODUCT_FAVORITE(?,?);`, [idProduct, idUser]);
+
+            res.json({
+                resp: true,
+                msj: 'Delete product to Favorite'
+            });
+        }
+    } catch (error) {
         res.json({
-            resp: true,
-            msj: 'Product add to Favorite'
-        })
-    } else {
-        await pool.query(`CALL SP_DELETE_PRODUCT_FAVORITE(?,?);`, [idProduct, idUser]);
-
-        res.json({
-            resp: true,
-            msj: 'Delete product to Favorite'
+            resp: false,
+            msj: error
         });
     }
 };
@@ -56,22 +63,48 @@ const productFavoriteForUser = async (req, res = response) => {
     });
 }
 
+const checkFavorite = async (req, res = response) => {
+
+    const uidUser = req.uid;
+
+    try {
+        const rows = await pool.query('SELECT*FROM favorite WHERE user_id =? AND product_id = ?', [uidUser, req.params.idProduct]);
+
+        console.log(rows);
+        if(rows.length = 0){
+            res.json({
+                resp: false,
+                msj: 'No product',
+            });
+        }
+        res.json({
+            resp: true,
+            msj: 'Product',
+        });
+    } catch (error) {
+        res.json({
+            resp: false,
+            msj: error,
+        });
+    }
+}
+
 const saveOrderProducts = async (req, res = response) => {
     try {
         const { status, date, amount, address, note, payment, tax, totalOriginal, datee2, products } = req.body;
         const uid = req.uid;
 
-        if (status == undefined || date == undefined || amount == undefined|| address == undefined 
-            || payment == undefined || tax== undefined || totalOriginal == undefined ||datee2 == undefined 
-            ||products == undefined) {
+        if (status == undefined || date == undefined || amount == undefined || address == undefined
+            || payment == undefined || tax == undefined || totalOriginal == undefined || datee2 == undefined
+            || products == undefined) {
             return res.status(400).json({
                 resp: false,
                 msj: 'Somthing Wrong'
             });
         } else {
 
-            const db = await pool.query('INSERT INTO orderBuy (user_id, status, datee, amount, address, note, payment, tax, total_original, datee2) VALUES (?,?,?,?,?,?,?,?,?,?)', 
-            [uid, status, date, amount, address, note, payment, tax, totalOriginal, datee2]);
+            const db = await pool.query('INSERT INTO orderBuy (user_id, status, datee, amount, address, note, payment, tax, total_original, datee2) VALUES (?,?,?,?,?,?,?,?,?,?)',
+                [uid, status, date, amount, address, note, payment, tax, totalOriginal, datee2]);
 
             console.log(db);
 
@@ -105,15 +138,15 @@ const checkQuantityProduct = async (req, res = response) => {
     }
     try {
         const row = await pool.query('SELECT nameProduct, quantily, sold FROM products WHERE idProduct = ?', [idProduct]);
-        if(row[0].quantily > parseInt(quantity)){
+        if (row[0].quantily > parseInt(quantity)) {
             return res.json({
                 resp: true,
                 msj: 'Success'
             });
-        }else{
+        } else {
             return res.json({
                 resp: false,
-                msj: 'Quantity '+ row[0].nameProduct + ' is not enough'
+                msj: 'Quantity ' + row[0].nameProduct + ' is not enough'
             });
         }
     } catch (error) {
@@ -125,7 +158,7 @@ const checkQuantityProduct = async (req, res = response) => {
 }
 
 const updateQuantityProduct = async (req, res = response) => {
-    var {idProduct, quantity} = req.body;
+    var { idProduct, quantity } = req.body;
     if (idProduct == undefined || quantity == undefined) {
         return res.json({
             resp: false,
@@ -134,13 +167,13 @@ const updateQuantityProduct = async (req, res = response) => {
     }
     try {
         const row = await pool.query('SELECT nameProduct, quantily, sold FROM products WHERE idProduct = ?', [idProduct]);
-            var nQuantity = row[0].quantily - quantity;
-            var nSold = row[0].sold + quantity;
-            pool.query('UPDATE products SET quantily = ?, sold =? WHERE idProduct = ?',[nQuantity, nSold, idProduct]);
-            return res.json({
-                resp: true,
-                msj: 'update number successfully'
-            });
+        var nQuantity = row[0].quantily - quantity;
+        var nSold = row[0].sold + quantity;
+        pool.query('UPDATE products SET quantily = ?, sold =? WHERE idProduct = ?', [nQuantity, nSold, idProduct]);
+        return res.json({
+            resp: true,
+            msj: 'update number successfully'
+        });
     } catch (error) {
         return res.json({
             resp: false,
@@ -357,5 +390,6 @@ module.exports = {
     getDetailOders,
     updateOrderStatus,
     getProductDetail,
-    updateQuantityProduct
+    updateQuantityProduct,
+    checkFavorite
 }

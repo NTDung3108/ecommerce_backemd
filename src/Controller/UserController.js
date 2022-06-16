@@ -53,7 +53,7 @@ const getPersonalInformation = async ( req, res = response ) => {
 
     const uid = req.uid;
 
-    const user = await pool.query('SELECT uid, firstName, lastName, phone, address, reference, image FROM person WHERE uid = ?',[ uid ]);
+    const user = await pool.query('SELECT uid, firstName, lastName, phone, address, sex, image FROM person WHERE uid = ?',[ uid ]);
 
     console.log(user);
 
