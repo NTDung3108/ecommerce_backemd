@@ -19,9 +19,9 @@ const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = requir
 const { getAllUsers, getAllStaff, verifyStaff, registerInfoStaff, getInfoStaff} = require('../Controller/UserControllerSaff');
 const { topBuyers, revenue, sumProduct, sumOrder, topProduct} = require('../Controller/AdminHomeContronller');
 const { getAllDiscount } = require('../Controller/DiscountControllerStaff');
-const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
+// const { getRating, getAVGRating, addNewRating } = require('../Controller/RatingController');
 const { getAllCategory } = require('../Controller/CategoryControllerStaff');
-
+const { getAVGRating, getCommet, addNewRating} = require('../Controller/RatingController.js');
 
 
 const router = Router();
@@ -93,8 +93,9 @@ router.get('/api/get-detail-product/:productId', getProductDetail);
 
 router.put('/api/update-quantity-product', updateQuantityProduct);
 
-router.get('/api/get-avg-rating/:productId', getAVGRating);
-router.post('/api/new-rating', addNewRating);
+router.get('/api/get-avg-rating/:idProduct', getAVGRating);
+router.get('/api/get-commet/:idProduct', getCommet);
+router.post('/api/new-comment', validateToken, addNewRating);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -139,8 +140,6 @@ router.put('/api/staff/verify-staff', validateToken, verifyStaff);
 router.get('/api/get-all-discount', getAllDiscount);
 
 router.get('/api/staff/get-all-category', getAllCategory);
-
-router.get('/api/get-rating/:productId', validateToken, getRating);
 
 router.get('/api/get-all-order', [validateToken, cors()], getAllOrders);
 router.get('/api/revenue-statistics', [validateToken, cors()], revenueStatistics);
