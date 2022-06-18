@@ -1,0 +1,17 @@
+				HOA DON BAN HANG
+				Ma hoa don: 12
+Ten cua hang:
+Dia chi: abc-xyz
+
+
+Ten khach hang: Trung Trung
+Dia chi: as, asd
+So dien thoai: 5555555555
+┍━━┑━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑━━━┑━━━━━━━━━━━━━━━━━━┑━━━━━━━━━━━━━━━━━━━┑
+│st|ten san pham                                        │sl │price             |amount             |
+│1 |Chuột Logitech G903 Hero Lightspeed Wireless        │1  │2990000           |2990000            |
+┗━━┙━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙━━━┙━━━━━━━━━━━━━━━━━━┙━━━━━━━━━━━━━━━━━━━┙
+
+ Tong gia: 2990000 [ chua thanh toan ]
+ 					     Ngay 17 thang 06 nam 2022 
+	 Khach Hang 				Nguoi viet hoa don

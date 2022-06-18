@@ -310,7 +310,7 @@ const updateOrderStatus = async (req, res = response) => {
     console.log(status + '+' + orderId);
 
     if (status == undefined || orderId == undefined || status == '' || orderId == '') {
-        return res.status(400).json({
+        return res.json({
             resp: false,
             msj: 'status, reason or orderid is undefined',
         });

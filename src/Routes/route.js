@@ -88,7 +88,7 @@ router.get('/api/get-brands-list/:subCategoryId', getBrandList);
 router.get('/api/get-all-product', getAllProducts);
 router.get('/api/check-quantity-product', checkQuantityProduct);
 router.get('/api/get-detail-by-id/:orderId', validateToken, getDetailOders);
-router.put('/api/update-order-status', validateToken, updateOrderStatus);
+router.put('/api/update-order-status', [validateToken, cors()], updateOrderStatus);
 router.get('/api/get-detail-product/:productId', getProductDetail);
 
 router.put('/api/update-quantity-product', updateQuantityProduct);
@@ -141,14 +141,14 @@ router.get('/api/get-all-discount', getAllDiscount);
 
 router.get('/api/staff/get-all-category', getAllCategory);
 
-router.get('/api/get-all-order', [validateToken, cors()], getAllOrders);
-router.get('/api/revenue-statistics', [validateToken, cors()], revenueStatistics);
+router.get('/api/get-all-order',cors()/*[validateToken, cors()]*/, getAllOrders);
+router.get('/api/revenue-statistics', cors()/*[validateToken, cors()]*/, revenueStatistics);
 router.get('/api/export_invoice/:orderId',cors(), exportInvoice);
-router.get('/api/order_details/:orderId', [validateToken, cors()], getOrderDetail);
+router.get('/api/order_details/:orderId', cors()/*[validateToken, cors()]*/, getOrderDetail);
 
-router.get('/api/revenue-month', [validateToken, cors()], revenue);
-router.get('/api/sum-product', [validateToken, cors()], sumProduct);
-router.get('/api/sum-order', [validateToken, cors()], sumOrder);
-router.get('/api/top-Products', [validateToken, cors()], topProduct);
+router.get('/api/revenue-month', /*[validateToken, cors()],*/ revenue);
+router.get('/api/sum-product',/* [validateToken, cors()],*/ sumProduct);
+router.get('/api/sum-order', /*[validateToken, cors()],*/ sumOrder);
+router.get('/api/top-Products', /*[validateToken, cors()],*/ topProduct);
 
 module.exports = router;
