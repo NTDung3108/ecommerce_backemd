@@ -60,75 +60,53 @@ const addNewProduct = async (req, res = response) => {
     }
 };
 
-// const updateProduct = async (req, res = response) => {
-//     const {in_nameProduct, in_description, in_price, in_discount, in_quantily, 
-//         in_brands_id, in_colors ,in_subcategory_id} = req.body;
+const updateProduct = async (req, res = response) => {
+    const { in_idProduct, in_nameProduct, in_description, in_price, in_discount,
+        in_quantily, in_colors, in_brands_id, in_subcategory_id, in_importPrice } = req.body;
 
-//     try {
+    try {
+        if (in_idProduct == undefined || in_nameProduct == undefined || in_description == undefined || in_price == undefined || in_discount == undefined ||
+            in_quantily == undefined || in_colors == undefined || in_brands_id == undefined || in_subcategory_id == undefined || in_importPrice == undefined) {
+            return res.json({
+                resp: false,
+                msj: 'Missing product information'
+            });
+        }
 
-//         console.log(req.files);
-//         if(req.files == undefined || req.files.length <= 0){
-//             return res.json({
-//                 resp : false,
-//                 msj : 'You must select at least 1 file or more.'
-//             });
-//         }
-
-//         for(i = 0 ; i<req.files.length; i++){
-//             pictures.push(req.files[0].filename);
-//         }
-
-//         var json1 = JSON.stringify(pictures);
-
-//         console.log(json1+' - '+typeof(json1));
-
-//         if(in_nameProduct == ''||in_description == ''||in_price == ''||in_discount == ''||in_quantily == ''
-//         ||in_brands_id == ''||in_subcategory_id== ''){
-//             return res.status(400).json({
-//                 resp : false,
-//                 msj : 'Missing product information'
-//             });
-//         }
-
-//         var date = new Date().getTime()/1000;
-//         var time = Math.round(date);
+        var date = new Date().getTime() / 1000;
+        var time = Math.round(date);
 
 
-//         console.log(time);
-
-//         var json = JSON.stringify(in_colors);
-
-//         console.log(json+' - '+typeof(json));
+        await pool.query(`CALL SP_UPDATE_PRODUCT(?,?,?,?,?,?,?,?,?,?,?)`,
+            [in_idProduct, in_nameProduct, in_description, in_price, in_discount, in_quantily, in_colors, in_brands_id, in_subcategory_id, time, in_importPrice]);
 
 
-//         await pool.query(`CALL SP_ADD_PRODUCT(?,?,?,?,?,?,?,?,?,?);`,[in_nameProduct, in_description, in_price, in_discount, in_quantily,
-//             in_brands_id, json, in_subcategory_id, time, time]);
+        return res.json({
+            resp: true,
+            msj: 'Update Product Success'
+        });
 
-//         return res.status(200).json({
-//             resp : true,
-//             msj : 'Success'
-//         });
 
-//     } catch (error) {
-//         return res.status(400).json({
-//             resp : false,
-//             msj : error
-//         });
-//     }
-// };
+    } catch (error) {
+        return res.status(400).json({
+            resp: false,
+            msj: error
+        });
+    }
+};
 
 
 const deleteProduct = async (req, res = response) => {
-
+    const {idProduct} = req.body;
     try {
-        if (req.params.idProduct == undefined || req.params.idProduct == null || req.params.idProduct == '') {
+        if (idProduct == undefined || idProduct == null || idProduct == '') {
             return res.status(400).json({
                 resp: false,
                 msj: 'Product deletion failed due to missing idproduct'
             });
         }
 
-        await pool.query(`CALL SP_DELETE_PRODUCT(?);`, [req.params.idProduct]);
+        await pool.query(`CALL SP_DELETE_PRODUCT(?);`, [idProduct]);
 
         return res.status(200).json({
             resp: true,
@@ -156,14 +134,15 @@ const getProductById = async (req, res = response) => {
         const row = await pool.query("SELECT*FROM products WHERE idProduct = ? AND status = 1", [req.params.id]);
 
         const product = row[0];
-
         const colors = JSON.parse(product.colors);
-
         const picture = JSON.parse(product.picture);
-
         product.colors = colors;
-
         product.picture = picture;
+        var a = new Date(product.addDay * 1000);
+        var b = new Date(product.updateday * 1000);
+
+        product.addDay = a.getDate() + '/' + a.getMonth() + '/' + a.getFullYear();
+        product.updateday = b.getDate() + '/' + b.getMonth() + '/' + b.getFullYear();
 
         return res.status(200).json({
             resp: true,
@@ -190,8 +169,8 @@ const getAllProductStaff = async (req, res = response) => {
         for (i = 0; i < product.length; i++) {
             var a = new Date(product[i].addDay * 1000);
             var b = new Date(product[i].updateDay * 1000);
-            product[i].addDay = a.getDate()+'/'+a.getMonth()+'/'+a.getFullYear();
-            product[i].updateDay = b.getDate()+'/'+b.getMonth()+'/'+b.getFullYear();
+            product[i].addDay = a.getDate() + '/' + a.getMonth() + '/' + a.getFullYear();
+            product[i].updateDay = b.getDate() + '/' + b.getMonth() + '/' + b.getFullYear();
         }
 
 
@@ -222,5 +201,6 @@ module.exports = {
     addNewProduct,
     deleteProduct,
     getProductById,
-    getAllProductStaff
+    getAllProductStaff,
+    updateProduct
 }

@@ -13,7 +13,7 @@ const { ListProductsHome, ListCategoriesAll, ListCategoriesHome, ListSubCategori
 const { addFavoriteProduct, productFavoriteForUser, saveOrderProducts, getPurchasedProduct, 
     getProductsForCategories, getBrandList, getAllProducts, checkQuantityProduct, getDetailOders,
     updateOrderStatus, getProductDetail, updateQuantityProduct, checkFavorite} = require('../Controller/ProductsController');
-const { addNewProduct, deleteProduct, getProductById, getAllProductStaff} = require('../Controller/ProductsControllerStaff');
+const { addNewProduct, deleteProduct, getProductById, getAllProductStaff, updateProduct} = require('../Controller/ProductsControllerStaff');
 const { addNewBrands, getAllBrands, deleteBrands } = require('../Controller/BrandsControllerStaff');
 const { getAllOrders, revenueStatistics, exportInvoice, getOrderDetail} = require('../Controller/OrdersControllerStaff');
 const { getAllUsers, getAllStaff, verifyStaff, registerInfoStaff, getInfoStaff} = require('../Controller/UserControllerSaff');
@@ -121,9 +121,10 @@ router.get('/api/staff/get-info-staff/:sid', [validateToken, cors()],getInfoStaf
 router.put('/api/staff/register', registerInfoStaff);
 
 router.post('/api/staff/add-new-product', uploadManyFiles.array('multi-files',5), addNewProduct);
-router.delete('/api/staff/delete-product/:idProduct', deleteProduct);
+router.put('/api/staff/delete-product', deleteProduct);
 router.get('/api/staff/get-product-by-id/:id', getProductById)
 router.get('/api/staff/get-all-product', getAllProductStaff)
+router.put('/api/staff/update-product', updateProduct)
 
 router.post('/api/staff/add-new-brands', uploadsBrands.single('brands'), addNewBrands);
 router.get('/api/staff/get-all-brands', getAllBrands);
