@@ -2,8 +2,8 @@ const { response } = require('express');
 const pool = require('../Database/database');
 
 const addNewProduct = async (req, res = response) => {
-    const { in_nameProduct, in_description, in_price, in_discount, in_quantily,
-        in_brands_id, in_colors, in_subcategory_id } = req.body;
+    const {in_nameProduct, in_description, in_price, in_discount, in_quantily, in_colors,
+        in_brands_id, in_subcategory_id, in_importPrice} = req.body;
 
     var pictures = [];
 
@@ -25,9 +25,9 @@ const addNewProduct = async (req, res = response) => {
 
         console.log(json1 + ' - ' + typeof (json1));
 
-        if (in_nameProduct == '' || in_description == '' || in_price == '' || in_discount == '' || in_quantily == ''
-            || in_brands_id == '' || in_subcategory_id == '') {
-            return res.status(400).json({
+        if (in_nameProduct == undefined || in_description == undefined || in_price == undefined || in_discount == undefined || in_quantily == undefined
+            || in_brands_id ==undefined || in_subcategory_id == undefined || in_importPrice == undefined) {
+            return res.json({
                 resp: false,
                 msj: 'Missing product information'
             });
@@ -44,8 +44,8 @@ const addNewProduct = async (req, res = response) => {
         console.log(json + ' - ' + typeof (json));
 
 
-        await pool.query(`CALL SP_ADD_PRODUCT(?,?,?,?,?,?,?,?,?,?);`, [in_nameProduct, in_description, in_price, in_discount, in_quantily,
-            in_brands_id, json, in_subcategory_id, time, time]);
+        await pool.query(`CALL SP_ADD_PRODUCT (?,?,?,?,?,?,?,?,?,?,?,?);`, 
+        [in_nameProduct, in_description, in_price, in_discount, json1, in_quantily, json, in_brands_id, in_subcategory_id, time, time, in_importPrice]);
 
         return res.status(200).json({
             resp: true,
