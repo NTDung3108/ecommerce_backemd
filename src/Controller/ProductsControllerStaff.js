@@ -39,13 +39,11 @@ const addNewProduct = async (req, res = response) => {
 
         console.log(time);
 
-        var json = JSON.stringify(in_colors);
-
-        console.log(json + ' - ' + typeof (json));
+        console.log(in_colors+ ' - ' + typeof (in_colors));
 
 
         await pool.query(`CALL SP_ADD_PRODUCT (?,?,?,?,?,?,?,?,?,?,?,?);`, 
-        [in_nameProduct, in_description, in_price, in_discount, json1, in_quantily, json, in_brands_id, in_subcategory_id, time, time, in_importPrice]);
+        [in_nameProduct, in_description, in_price, in_discount, json1, in_quantily, in_colors, in_brands_id, in_subcategory_id, time, time, in_importPrice]);
 
         return res.status(200).json({
             resp: true,
